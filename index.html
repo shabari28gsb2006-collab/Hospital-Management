@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hospital Management System</title>
+<style>
+body{
+  font-family:Arial;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    linear-gradient(135deg, rgba(2,48,71,0.85), rgba(6,77,121,0.85)),
+    url("https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=1950&q=80");
+  background-blend-mode:overlay;
+  background-size:cover;
+  background-position:center;
+  color:white;
+  text-align:center;
+}
+
+.hero{max-width:880px;padding:40px 24px}
+.title{font-size:48px;margin:0 0 8px;letter-spacing:1px;font-weight:700}
+.subtitle{font-size:22px;margin:0 0 26px;opacity:0.95}
+
+.search{display:flex;justify-content:center;margin-top:18px}
+input{padding:14px 18px;font-size:18px;border-radius:8px;border:0;outline:none;width:360px;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+button{padding:14px 20px;font-size:18px;margin-left:12px;border-radius:8px;border:0;background:#0ea5a4;color:white;cursor:pointer;transition:transform .18s ease,box-shadow .18s}
+button:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(14,165,164,0.18)}
+</style>
+</head>
+<body>
+
+<div>
+  <div class="hero">
+    <div class="title">Hospital Management System</div>
+    <div class="subtitle">Resource Allocation</div>
+
+    <div class="search">
+      <input type="text" id="city" placeholder="Type city name and press Enter">
+      <button id="searchBtn">Search</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(){
+  let city=document.getElementById("city").value.trim();
+  if(city.length===0){
+    return alert('Please enter a city name');
+  }
+  localStorage.setItem('city', city);
+  window.location.href = 'hospitals.html';
+}
+
+document.getElementById('searchBtn').addEventListener('click', go);
+document.getElementById('city').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') go();
+});
+</script>
+
+</body>
+</html>

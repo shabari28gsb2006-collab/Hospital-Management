@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hospital Dashboard</title>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  min-height:100vh;
+  display:flex;
+  background:
+   linear-gradient(135deg, rgba(2,48,71,0.82), rgba(6,77,121,0.82)),
+   url("https://images.unsplash.com/photo-1587351021759-3e566b3db4f1?auto=format&fit=crop&w=1950&q=80");
+  background-blend-mode:overlay;
+  background-size:cover;
+  background-position:center;
+  color:white;
+}
+
+.container{display:flex;min-height:100vh;width:100%}
+.left{width:50%;padding:64px;display:flex;flex-direction:column;justify-content:center;background:rgba(255,255,255,0.03);backdrop-filter:blur(2px)}
+.right{width:50%;display:flex;align-items:center;justify-content:center;padding:40px}
+
+.stat{background:white;color:black;padding:20px;border-radius:12px;font-size:20px;box-shadow:0 12px 30px rgba(0,0,0,0.28);margin-bottom:18px;max-width:420px}
+
+.cards{display:flex;gap:34px;flex-wrap:wrap;justify-content:center}
+.card{width:240px;height:260px;background:white;color:black;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease;display:flex;flex-direction:column;align-items:center}
+.card img{width:100%;height:150px;object-fit:cover}
+.card h3{margin:12px 0}
+.card:hover{transform:translateY(-8px);box-shadow:0 18px 36px rgba(0,0,0,0.32)}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left">
+    <h1 style="margin:0 0 18px;font-size:34px">Hospital Resources</h1>
+    <div class="stat">Hospital: <strong id="hospitalName">-</strong></div>
+    <div class="stat">Beds Available: <strong id="beds"></strong></div>
+    <div class="stat">Oxygen Cylinders: <strong id="oxygen">25</strong></div>
+    <div class="stat">Ventilators: <strong id="vents">10</strong></div>
+  </div>
+
+  <div class="right">
+    <div class="cards">
+      <div class="card" onclick="openLogin('patient')">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=800&q=60" alt="Patient">
+        <h3>Patient Login</h3>
+      </div>
+
+      <div class="card" onclick="openLogin('doctor')">
+        <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=800&q=60" alt="Doctor">
+        <h3>Doctor Login</h3>
+      </div>
+      
+      <div class="card" onclick="openLogin('admin')">
+        <img src="admin.png" alt="Admin">
+        <h3>Admin Login</h3>
+      </div>
+      
+      <div class="card" onclick="window.location='booking.html'">
+        <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=800&q=60" alt="Book">
+        <h3>Book Appointment</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const beds = localStorage.getItem('beds') || 'N/A';
+const resources = localStorage.getItem('resources') || 'N/A';
+const name = localStorage.getItem('hospitalName') || 'Selected Hospital';
+document.getElementById('beds').innerText = beds;
+document.getElementById('hospitalName').innerText = name;
+
+function openLogin(role){
+  localStorage.setItem('loginRole', role);
+  window.location = 'login.html';
+}
+</script>
+
+</body>
+</html>

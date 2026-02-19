@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hospitals</title>
+<style>
+body{
+  font-family:Arial;
+  margin:0;
+  padding:40px;
+  background:
+   
+   url("https://wallpapers.com/images/hd/radiant-white-hospital-hallway-s926tbukftnohijz.jpg");
+  background-size:cover;
+  background-position:center;
+  color:white;
+}
+
+h2{text-align:center;margin-bottom:30px;}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:26px;
+}
+
+.card{
+  position:relative;
+  background:white;
+  color:black;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 8px 26px rgba(0,0,0,0.28);
+  cursor:pointer;
+  transition:transform .22s ease,box-shadow .22s ease;
+  display:flex;
+  flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-8px) scale(1.02);
+}
+
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+
+.content{
+  padding:15px;
+}
+
+.status{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+}
+.green{background:green;}
+.yellow{background:gold;}
+.red{background:red;}
+
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.view-btn{background:#0ea5a4;color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer;transition:transform .15s ease}
+.view-btn:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(14,165,164,0.15)}
+.card .bottom{padding:14px}
+</style>
+</head>
+<body>
+
+<h2 id="title"></h2>
+<div class="grid" id="grid"></div>
+
+<script>
+let city=localStorage.getItem("city");
+document.getElementById("title").innerText="Hospitals in "+city;
+
+let hospitals=[
+ {name:"City Care Hospital",beds:20,res:15,img:"https://i.pinimg.com/originals/ef/ab/65/efab656b00b6934bdb4092faedb90658.jpg"},
+ {name:"Apollo Hospital",beds:5,res:8,img:"https://tse2.mm.bing.net/th/id/OIP.B3TPaAWhiqoJogaypisB7QHaE8?pid=Api&P=0&h=180"},
+ {name:"Government Hospital",beds:0,res:20,img:"https://tse2.mm.bing.net/th/id/OIP.gWR42_JRGlOZ_WjC1anupQHaFX?pid=Api&P=0&h=180"}
+];
+
+function color(b){
+ if(b>10) return "green";
+ if(b>0) return "yellow";
+ return "red";
+}
+
+let html="";
+hospitals.forEach(h=>{
+ html+=`
+ <div class="card">
+   <div class="status ${color(h.beds)}"></div>
+   <img src="${h.img}">
+   <div class="content">
+     <h3>${h.name}</h3>
+     <div> Beds Available: <b>${h.beds}</b></div>
+     <div> Resources: <b>${h.res}</b></div>
+   </div>
+   <div class="bottom">
+     <div class="meta">
+       <div style="font-size:13px;color:#666">${city || 'City'}</div>
+       <button class="view-btn" onclick="openHospital(event, ${h.beds}, ${h.res}, '${escape(h.name)}')">View</button>
+     </div>
+   </div>
+ </div>`;
+});
+
+document.getElementById("grid").innerHTML=html;
+
+function openHospital(e, beds, res, name){
+  if(e){ e.stopPropagation(); }
+  localStorage.setItem('beds', beds);
+  localStorage.setItem('resources', res);
+  localStorage.setItem('hospitalName', name || 'Hospital');
+  window.location = 'hospital_dashboard.html';
+}
+</script>
+
+</body>
+</html>
