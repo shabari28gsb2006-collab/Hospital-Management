@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Book Appointment</title>
+  <style>
+    body{font-family:Arial;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f4f7fb}
+    .card{width:460px;background:#fff;padding:22px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.12)}
+    h2{margin:0 0 14px}
+    label{display:block;margin-top:10px;font-size:13px;color:#333}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #d7dde6;margin-top:6px}
+    .slots{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .slot{padding:8px 12px;border-radius:8px;border:1px solid #cfd8e3;background:#eef4ff;cursor:pointer}
+    .slot.selected{background:#0ea5a4;color:#fff;border-color:#0ea5a4}
+    button{margin-top:16px;padding:12px 16px;border-radius:8px;border:0;background:#0ea5a4;color:#fff;cursor:pointer}
+
+    /* success overlay */
+    .overlay{position:fixed;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);visibility:hidden;opacity:0;transition:opacity .28s ease,visibility .28s}
+    .overlay.show{visibility:visible;opacity:1}
+    .toast{background:#fff;padding:24px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:8px;transform:scale(.8);animation:pop .45s forwards}
+    @keyframes pop{to{transform:scale(1)}}
+    .check{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:28px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Book Appointment</h2>
+    <form id="bookForm">
+      <label for="name">Name</label>
+      <input id="name" name="name" required>
+
+      <label for="age">Age</label>
+      <input id="age" name="age" type="number" min="0" required>
+
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender" required>
+        <option value="">Select</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <label for="bg">Blood Group</label>
+      <select id="bg" name="bg" required>
+        <option value="">Select</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>O+</option>
+        <option>O-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+      </select>
+
+      <label for="mobile">Mobile Number</label>
+      <input id="mobile" name="mobile" type="tel" pattern="[0-9+\-() ]+" required>
+
+      <label style="margin-top:14px">Available Appointment Times (operated by admin)</label>
+      <div id="slots" class="slots"></div>
+
+      <button type="submit">Submit Appointment</button>
+    </form>
+  </div>
+
+  <div id="overlay" class="overlay" role="dialog" aria-hidden="true">
+    <div class="toast">
+      <div class="check">✓</div>
+      <div style="font-weight:700">Successfully Submitted</div>
+      <div style="font-size:13px;color:#666">Your appointment request was sent.</div>
+    </div>
+  </div>
+
+  <script>
+    // sample slots (in real app admin would manage these)
+    const defaultSlots = ['09:00 AM','09:30 AM','10:00 AM','10:30 AM','11:00 AM','02:00 PM','02:30 PM','03:00 PM'];
+    const slotsKey = 'available_slots';
+    const stored = JSON.parse(localStorage.getItem(slotsKey) || 'null');
+    const slots = Array.isArray(stored) && stored.length ? stored : defaultSlots;
+
+    const slotsEl = document.getElementById('slots');
+    let selectedSlot = null;
+    function renderSlots(){
+      slotsEl.innerHTML = '';
+      slots.forEach(s => {
+        const el = document.createElement('div');
+        el.className = 'slot';
+        el.innerText = s;
+        el.onclick = () => { document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); selectedSlot = s; };
+        slotsEl.appendChild(el);
+      });
+    }
+    renderSlots();
+
+    document.getElementById('bookForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const age = document.getElementById('age').value.trim();
+      const gender = document.getElementById('gender').value;
+      const bg = document.getElementById('bg').value;
+      const mobile = document.getElementById('mobile').value.trim();
+      if(!selectedSlot){ alert('Please select an appointment time'); return; }
+
+      // store appointment in localStorage (for demo)
+      const appt = { name, age, gender, blood_group: bg, mobile, slot: selectedSlot, created: new Date().toISOString() };
+      const key = 'appointments';
+      const prev = JSON.parse(localStorage.getItem(key) || '[]');
+      prev.push(appt);
+      localStorage.setItem(key, JSON.stringify(prev));
+
+      // show success overlay with animation
+      const overlay = document.getElementById('overlay');
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+
+      // hide after 2s and optionally reset form
+      setTimeout(()=>{
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+        document.getElementById('bookForm').reset();
+        document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));
+        selectedSlot = null;
+      },2000);
+    });
+  </script>
+</body>
+</html>
